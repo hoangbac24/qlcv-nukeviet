@@ -32,6 +32,7 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_
 $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_tasks (
  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
  catid mediumint(8) unsigned NOT NULL DEFAULT 0,
+ userid mediumint(8) unsigned NOT NULL DEFAULT 0,
  title varchar(250) NOT NULL,
  description text,
  status tinyint(1) unsigned NOT NULL DEFAULT 0,
@@ -41,5 +42,6 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_
  checkout_image varchar(255) DEFAULT "",
  report_file varchar(255) DEFAULT "",
  PRIMARY KEY (id),
- KEY catid (catid)
+ KEY catid (catid),
+ KEY userid (userid)
 ) ENGINE=MyISAM';

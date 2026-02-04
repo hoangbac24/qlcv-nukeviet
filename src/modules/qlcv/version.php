@@ -6,7 +6,7 @@ if (!defined('NV_ADMIN') || !defined('NV_MAINFILE')) {
 
 $module_version = [
     'name' => 'QLCV',
-    'modfuncs' => '',
+    'modfuncs' => 'main,categories,dashboard,search,export,api',
     'adminfuncs' => 'main,categories,add,edit,delete,add_cat,edit_cat,delete_cat',
     'submenu' => '',
     'is_sysmod' => 0,

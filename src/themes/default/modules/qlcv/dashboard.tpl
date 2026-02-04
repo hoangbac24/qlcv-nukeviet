@@ -1,16 +1,8 @@
 <!-- BEGIN: main -->
-<h1>{LANG.task_management}</h1>
+<h1>{LANG.dashboard} - {USER_INFO.username}</h1>
+<p>{LANG.welcome_dashboard}</p>
 
-<div class="module-navigation">
-    <ul>
-        <li><a href="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}&op=dashboard">{LANG.dashboard}</a></li>
-        <li><a href="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}&op=search">{LANG.search_tasks}</a></li>
-        <li><a href="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}&op=export">{LANG.export_tasks}</a></li>
-        <li><a href="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}&op=api">{LANG.api_documentation}</a></li>
-    </ul>
-</div>
-
-<h2>{LANG.all_tasks}</h2>
+<h2>{LANG.my_tasks}</h2>
 <table border="1">
     <tr>
         <th>ID</th>

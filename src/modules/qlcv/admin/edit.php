@@ -75,8 +75,9 @@ if ($nv_Request->isset_request('submit', 'post')) {
     }
 
     // Update database
-    $stmt = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tasks SET catid = :catid, title = :title, description = :description, status = :status, edit_time = :edit_time, checkin_image = :checkin_image, checkout_image = :checkout_image, report_file = :report_file WHERE id = :id');
+    $stmt = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tasks SET catid = :catid, userid = :userid, title = :title, description = :description, status = :status, edit_time = :edit_time, checkin_image = :checkin_image, checkout_image = :checkout_image, report_file = :report_file WHERE id = :id');
     $stmt->bindValue(':catid', $catid, PDO::PARAM_INT);
+    $stmt->bindValue(':userid', $admin_info['userid'], PDO::PARAM_INT);
     $stmt->bindValue(':title', $title, PDO::PARAM_STR);
     $stmt->bindValue(':description', $description, PDO::PARAM_STR);
     $stmt->bindValue(':status', $status, PDO::PARAM_INT);
@@ -97,22 +98,19 @@ while ($cat = $result_cat->fetch()) {
     $categories[] = $cat;
 }
 
-// Use Smarty
-$smarty = new Smarty();
-$smarty->setTemplateDir(NV_ROOTDIR . '/modules/' . $module_name . '/admin/templates/');
-$smarty->setCompileDir(NV_ROOTDIR . '/data/tmp/');
-$smarty->setCacheDir(NV_ROOTDIR . '/data/cache/');
+// Use XTemplate
+$xtpl = new XTemplate('edit.tpl', NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file);
+$xtpl->assign('LANG', $nv_Lang);
+$xtpl->assign('MODULE_NAME', $module_name);
+$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
+$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
+$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
+$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
+$xtpl->assign('CATEGORIES', $categories);
+$xtpl->assign('DATA', $row);
 
-$smarty->assign('LANG', $nv_Lang);
-$smarty->assign('MODULE_NAME', $module_name);
-$smarty->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$smarty->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
-$smarty->assign('NV_LANG_DATA', NV_LANG_DATA);
-$smarty->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$smarty->assign('CATEGORIES', $categories);
-$smarty->assign('DATA', $row);
-
-$contents = $smarty->fetch('edit.tpl');
+$xtpl->parse('main');
+$contents = $xtpl->text('main');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

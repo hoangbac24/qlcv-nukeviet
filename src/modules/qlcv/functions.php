@@ -52,3 +52,27 @@ if ($page_config['viewtype'] != 2) {
         $id = $rowdetail['id'];
     }
 }
+
+// Handle different operations
+$op = $array_op[0] ?? 'main';
+
+switch ($op) {
+    case 'categories':
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/categories.php';
+        break;
+    case 'dashboard':
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/dashboard.php';
+        break;
+    case 'search':
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/search.php';
+        break;
+    case 'export':
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/export.php';
+        break;
+    case 'api':
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/api.php';
+        break;
+    default:
+        include NV_ROOTDIR . '/modules/' . $module_file . '/funcs/main.php';
+        break;
+}

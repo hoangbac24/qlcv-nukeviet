@@ -10,14 +10,6 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 
 require NV_ROOTDIR . '/modules/' . $module_name . '/admin.functions.php';
 
-// Include Smarty
-require_once NV_ROOTDIR . '/vendor/smarty/smarty/libs/Smarty.class.php';
-
-$smarty = new Smarty();
-$smarty->setTemplateDir(NV_ROOTDIR . '/modules/' . $module_name . '/admin/templates/');
-$smarty->setCompileDir(NV_ROOTDIR . '/data/tmp/');
-$smarty->setCacheDir(NV_ROOTDIR . '/data/cache/');
-
 // Handle form submission
 if ($nv_Request->isset_request('submit', 'post')) {
     $catid = $nv_Request->get_int('catid', 'post', 0);
@@ -62,8 +54,9 @@ if ($nv_Request->isset_request('submit', 'post')) {
 
     // Insert into database
     try {
-        $stmt = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tasks (catid, title, description, status, add_time, checkin_image, checkout_image, report_file) VALUES (:catid, :title, :description, :status, :add_time, :checkin_image, :checkout_image, :report_file)');
+        $stmt = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tasks (catid, userid, title, description, status, add_time, checkin_image, checkout_image, report_file) VALUES (:catid, :userid, :title, :description, :status, :add_time, :checkin_image, :checkout_image, :report_file)');
         $stmt->bindValue(':catid', $catid, PDO::PARAM_INT);
+        $stmt->bindValue(':userid', $admin_info['userid'], PDO::PARAM_INT);
         $stmt->bindValue(':title', $title, PDO::PARAM_STR);
         $stmt->bindValue(':description', $description, PDO::PARAM_STR);
         $stmt->bindValue(':status', $status, PDO::PARAM_INT);
@@ -86,17 +79,19 @@ while ($row = $result->fetch()) {
     $categories[] = $row;
 }
 
-// Assign variables to Smarty
-$smarty->assign('LANG', $nv_Lang);
-$smarty->assign('MODULE_NAME', $module_name);
-$smarty->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$smarty->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
-$smarty->assign('NV_LANG_DATA', NV_LANG_DATA);
-$smarty->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$smarty->assign('CATEGORIES', $categories);
+// Use XTemplate
+$xtpl = new XTemplate('add.tpl', NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file);
+$xtpl->assign('LANG', $nv_Lang);
+$xtpl->assign('MODULE_NAME', $module_name);
+$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
+$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
+$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
+$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
+$xtpl->assign('CATEGORIES', $categories);
 
 // Display template
-$contents = $smarty->fetch('add.tpl');
+$xtpl->parse('main');
+$contents = $xtpl->text('main');
 
 $page_title = 'Thêm công việc';
 
