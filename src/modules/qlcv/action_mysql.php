@@ -1,12 +1,11 @@
 <?php
 
 /**
- * NukeViet Content Management System
- * @version 5.x
- * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
- * @license GNU/GPL version 2 or any later version
- * @see https://github.com/nukeviet The NukeViet CMS GitHub project
+ * @Project NukeViet 5.x
+ * @Author Antigravity
+ * @copyright 2026
+ * @License GNU/GPL version 2 or any later version
+ * @createdate 11/02/2026
  */
 
 if (!defined('NV_IS_FILE_MODULES')) {
@@ -14,34 +13,35 @@ if (!defined('NV_IS_FILE_MODULES')) {
 }
 
 $sql_drop_module = [];
-
-$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_tasks;';
+$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_jobs;';
 $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_categories;';
 
 $sql_create_module = $sql_drop_module;
 
+// Categories Table
 $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_categories (
  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
  title varchar(250) NOT NULL,
  description text,
  weight smallint(4) unsigned NOT NULL DEFAULT 0,
  add_time int(11) NOT NULL DEFAULT 0,
+ edit_time int(11) NOT NULL DEFAULT 0,
  PRIMARY KEY (id)
 ) ENGINE=MyISAM';
 
-$sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_tasks (
+// Jobs Table
+$sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . '_jobs (
  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
  catid mediumint(8) unsigned NOT NULL DEFAULT 0,
- userid mediumint(8) unsigned NOT NULL DEFAULT 0,
  title varchar(250) NOT NULL,
  description text,
- status tinyint(1) unsigned NOT NULL DEFAULT 0,
+ content mediumtext,
+ image_checkin varchar(255) DEFAULT \'\',
+ image_checkout varchar(255) DEFAULT \'\',
+ file_report varchar(255) DEFAULT \'\',
+ status tinyint(1) unsigned NOT NULL DEFAULT 1,
  add_time int(11) NOT NULL DEFAULT 0,
  edit_time int(11) NOT NULL DEFAULT 0,
- checkin_image varchar(255) DEFAULT "",
- checkout_image varchar(255) DEFAULT "",
- report_file varchar(255) DEFAULT "",
  PRIMARY KEY (id),
- KEY catid (catid),
- KEY userid (userid)
+ KEY catid (catid)
 ) ENGINE=MyISAM';

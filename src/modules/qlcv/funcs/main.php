@@ -1,89 +1,77 @@
 <?php
 
 /**
- * @Project Module Nukeviet 4.x
- * @Author Generated
+ * @Project NukeViet 5.x
+ * @Author Antigravity
  * @copyright 2026
  * @License GNU/GPL version 2 or any later version
- * @createdate 03/02/2026
+ * @createdate 11/02/2026
  */
 
 if (!defined('NV_IS_MOD_QLCV')) {
     exit('Stop!!!');
 }
 
-$page_title = 'Danh sách công việc';
-$key_words = 'qlcv';
+$page_title = $module_info['custom_title'];
+$key_words = $module_info['keywords'];
+
+// Ensure module_upload is available
+global $module_upload;
+// Debug
+// echo "Module Upload: " . $module_upload . "<br>";
 
 $per_page = 10;
 $page = $nv_Request->get_int('page', 'get', 1);
-$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
 
-// Get categories
-$global_array_cat = [];
-$result = $db->query('SELECT id, title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_categories ORDER BY weight ASC');
-while ($row = $result->fetch()) {
-    $global_array_cat[$row['id']] = $row;
-}
-
-// Query tasks
 $db->sqlreset()
     ->select('COUNT(*)')
-    ->from(NV_PREFIXLANG . '_' . $module_data . '_tasks');
-
+    ->from(NV_PREFIXLANG . '_' . $module_data . '_jobs')
+    ->where('status=1');
 $num_items = $db->query($db->sql())->fetchColumn();
 
-$db->select('id, catid, title, description, status, add_time, checkin_image, checkout_image, report_file')
+$db->select('id, title, description, add_time, image_checkin, image_checkout, file_report')
+    ->from(NV_PREFIXLANG . '_' . $module_data . '_jobs')
     ->order('add_time DESC')
     ->limit($per_page)
     ->offset(($page - 1) * $per_page);
 
+$stt = ($page - 1) * $per_page;
 $result = $db->query($db->sql());
-$array_data = [];
-while ($row = $result->fetch()) {
-    $row['category'] = isset($global_array_cat[$row['catid']]) ? $global_array_cat[$row['catid']]['title'] : 'N/A';
-    
-    // Handle images and files
-    if (!empty($row['checkin_image'])) {
-        $row['checkin_image_url'] = NV_BASE_SITEURL . 'uploads/' . $module_upload . '/' . $row['checkin_image'];
-    }
-    if (!empty($row['checkout_image'])) {
-        $row['checkout_image_url'] = NV_BASE_SITEURL . 'uploads/' . $module_upload . '/' . $row['checkout_image'];
-    }
-    if (!empty($row['report_file'])) {
-        $row['report_file_url'] = NV_BASE_SITEURL . 'uploads/' . $module_upload . '/' . $row['report_file'];
-    }
-    
-    $array_data[] = $row;
-}
 
-// Generate page
+$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
 $generate_page = nv_generate_page($base_url, $num_items, $per_page, $page);
 
-// Use XTemplate
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
+$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', $nv_Lang);
 $xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('MODULE_FILE', $module_file);
-$xtpl->assign('PAGE', $page);
+$xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 $xtpl->assign('GENERATE_PAGE', $generate_page);
 
-foreach ($array_data as $data) {
-    $data['add_time'] = date('d/m/Y H:i', $data['add_time']);
-    $data['status_text'] = $data['status'] ? $nv_Lang->getModule('completed') : $nv_Lang->getModule('pending');
-    $xtpl->assign('DATA', $data);
+while ($row = $result->fetch()) {
+    $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&op=detail&id=' . $row['id'];
+    $row['add_time'] = date('d/m/Y', $row['add_time']);
+
+    $xtpl->assign('DATA', $row);
     
-    // Handle conditional blocks for images and files
-    if (!empty($data['checkin_image_url'])) {
+    // Debug
+    // echo "Row ID: " . $row['id'] . " - Image: " . $row['image_checkin'] . "<br>";
+
+// Ensure module_upload is available
+    $module_upload = $module_name;
+
+    if (!empty($row['image_checkin'])) {
+        $row['checkin_image_url'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $row['image_checkin'];
+    }
+
+    $stt++;
+    $row['stt'] = $stt;
+
+    $xtpl->assign('DATA', $row);
+
+    if (!empty($row['image_checkin'])) {
         $xtpl->parse('main.loop.checkin_image');
     }
-    if (!empty($data['checkout_image_url'])) {
-        $xtpl->parse('main.loop.checkout_image');
-    }
-    if (!empty($data['report_file_url'])) {
-        $xtpl->parse('main.loop.report_file');
-    }
-    
+
     $xtpl->parse('main.loop');
 }
 

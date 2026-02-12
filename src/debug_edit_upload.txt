@@ -1,0 +1,22 @@
+Files: Array
+(
+    [image_checkin] => Array
+        (
+            [name] => Ảnh màn hình 2026-01-14 lúc 14.42.25.png
+            [full_path] => Ảnh màn hình 2026-01-14 lúc 14.42.25.png
+            [type] => image/png
+            [tmp_name] => /Applications/MAMP/tmp/php/php73Ydtn
+            [error] => 0
+            [size] => 235139
+        )
+
+)
+
+Post: Array
+(
+    [cat_title] => Học tập
+    [title] => Làm báo cáo phân tích hệ thống
+    [description] => Phân tích yêu cầu và thiết kế CSDL
+    [content] => Test lại toàn bộ module
+    [submit] => Lưu thay đổi
+)

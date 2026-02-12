@@ -12,42 +12,35 @@
 
 <h2>{LANG.all_tasks}</h2>
 <table border="1">
-    <tr>
-        <th>ID</th>
-        <th>{LANG.category}</th>
-        <th>{LANG.title}</th>
-        <th>{LANG.description}</th>
-        <th>{LANG.status}</th>
-        <th>{LANG.checkin_image}</th>
-        <th>{LANG.checkout_image}</th>
-        <th>{LANG.report_file}</th>
-        <th>{LANG.add_time}</th>
-    </tr>
+    <thead>
+        <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">{LANG.image}</th>
+            <th>{LANG.title}</th>
+            <th>{LANG.description}</th>
+
+
+            <th class="text-center">{LANG.feature}</th>
+        </tr>
+    </thead>
+    <tbody>
     <!-- BEGIN: loop -->
     <tr>
-        <td>{DATA.id}</td>
-        <td>{DATA.category}</td>
-        <td>{DATA.title}</td>
-        <td>{DATA.description}</td>
-        <td>{DATA.status_text}</td>
-        <td>
+        <td class="text-center">{DATA.stt}</td>
+        <td class="text-center">
             <!-- BEGIN: checkin_image -->
-            <img src="{DATA.checkin_image_url}" width="50" alt="{LANG.checkin_image}" />
+            <a href="{DATA.checkin_image_url}" class="glightbox"><img src="{DATA.checkin_image_url}" alt="{DATA.title}" style="max-width: 100px; max-height: 60px;"></a>
             <!-- END: checkin_image -->
         </td>
-        <td>
-            <!-- BEGIN: checkout_image -->
-            <img src="{DATA.checkout_image_url}" width="50" alt="{LANG.checkout_image}" />
-            <!-- END: checkout_image -->
+        <td><a href="{DATA.link}"><strong>{DATA.title}</strong></a></td>
+        <td>{DATA.description}</td>
+
+
+        <td class="text-center">
         </td>
-        <td>
-            <!-- BEGIN: report_file -->
-            <a href="{DATA.report_file_url}" target="_blank">{LANG.download}</a>
-            <!-- END: report_file -->
-        </td>
-        <td>{DATA.add_time}</td>
     </tr>
     <!-- END: loop -->
+    </tbody>
 </table>
 <div class="pagination">
     {GENERATE_PAGE}
